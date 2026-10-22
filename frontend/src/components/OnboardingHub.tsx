@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  ArrowDown,
+  BarChart3,
   BrainCircuit,
+  BookOpenCheck,
   Briefcase,
   Bug,
   Building2,
+  CheckCircle2,
   ChevronRight,
+  Clock3,
   CloudCog,
   Code2,
   Compass,
@@ -20,12 +23,14 @@ import {
   ServerCog,
   ShieldCheck,
   Smartphone,
-  Sparkles,
   Target,
 } from "lucide-react";
 import CareerQuizModal from "./CareerQuizModal";
 import {
+  calculateWorkflowTaskProgress,
   Company,
+  getActiveWorkflow,
+  getCompletedCheckpointCount,
   getCompanies,
   getRoles,
   Role,
@@ -38,6 +43,7 @@ export default function OnboardingHub() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Company | null>(null);
+  const [homeProgress, setHomeProgress] = useState(0);
   const [quiz, setQuiz] = useState(false);
   const navigate = useNavigate();
 
@@ -51,6 +57,17 @@ export default function OnboardingHub() {
           null,
       );
     });
+    getActiveWorkflow()
+      .then((workflow) => {
+        const completedChecks = getCompletedCheckpointCount(
+          workflow.mode,
+          workflow.target_id,
+        );
+        setHomeProgress(
+          calculateWorkflowTaskProgress(workflow, completedChecks),
+        );
+      })
+      .catch(() => setHomeProgress(0));
   }, []);
 
   const matches = useMemo(
@@ -86,139 +103,280 @@ export default function OnboardingHub() {
     gamepad: Gamepad2,
     palette: Palette,
   };
+  const savedPath = useMemo(() => {
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem("jobway-active-workflow") || "null",
+      ) as { mode: "role" | "company"; target_id: string } | null;
+      if (!saved) return null;
+      const label =
+        saved.mode === "company"
+          ? saved.target_id
+          : roles.find((role) => role.id === saved.target_id)?.title ||
+            saved.target_id
+              .split("_")
+              .map((part) => part[0]?.toUpperCase() + part.slice(1))
+              .join(" ");
+      return { ...saved, label };
+    } catch {
+      return null;
+    }
+  }, [roles]);
 
   return (
     <div className="portal-page landing-page">
-      <section className="portal-hero hero-stage">
-        <div className="hero-glow glow-one" />
-        <div className="hero-glow glow-two" />
-        <div className="hero-copy">
-          <div className="eyebrow">
-            <Sparkles size={16} /> Built for your next software offer
-          </div>
-          <h1>
-            One goal.
-            <br />
-            <span>Your smartest path there.</span>
-          </h1>
-          <p>
-            Tell us what you know today. Job Way turns it into a focused
-            learning plan, daily practice, and measurable interview readiness.
-          </p>
-          <button
-            className="hero-cta"
-            onClick={() => scrollTo("start-options")}
-          >
-            Choose how to begin <ArrowDown size={17} />
-          </button>
-          <div className="hero-metrics">
-            <span>
-              <strong>{roles.length || 12}</strong> career paths
-            </span>
-            <span>
-              <strong>{companies.length || 470}</strong> companies
-            </span>
-            <span>
-              <strong>10</strong> verified tests/problem
-            </span>
-          </div>
-        </div>
-        <aside className="hero-plan-card">
-          <div className="plan-card-top">
-            <span>YOUR PREP SYSTEM</span>
-            <strong>Interview ready</strong>
-          </div>
-          {[
-            ["01", "Discover", "Find the right role"],
-            ["02", "Learn", "Follow the roadmap"],
-            ["03", "Practice", "Solve with feedback"],
-            ["04", "Apply", "Target ready companies"],
-          ].map(([number, title, copy], index) => (
-            <div className="plan-step" key={number}>
-              <span className={index === 0 ? "active" : ""}>{number}</span>
-              <div>
-                <strong>{title}</strong>
-                <small>{copy}</small>
-              </div>
-              {index < 3 && <i />}
+      <div className="opening-split">
+        <section className="portal-hero hero-stage career-compass-hero">
+          <div className="hero-copy">
+            <div className="eyebrow compass-kicker">
+              <BrainCircuit size={17} /> Career Compass · Start here
             </div>
-          ))}
-          <div className="plan-card-score">
-            <span>Readiness grows as you solve</span>
-            <div>
-              <i style={{ width: "62%" }} />
-            </div>
-          </div>
-        </aside>
-      </section>
-
-      <section id="start-options" className="start-section">
-        <div className="center-heading">
-          <span className="eyebrow">
-            <Compass size={15} /> START YOUR WAY
-          </span>
-          <h2>Which sounds most like you?</h2>
-          <p>No wrong door. You can switch paths at any time.</p>
-        </div>
-        <div className="start-grid">
-          <button
-            className="start-card role-start"
-            onClick={() => scrollTo("roles")}
-          >
-            <span className="start-icon">
-              <Briefcase />
-            </span>
-            <small>I already know</small>
-            <h3>I know what I want to become</h3>
-            <p>Choose a job and get its complete skill roadmap.</p>
-            <b>
-              Explore {roles.length || 12} career paths <ChevronRight />
-            </b>
-          </button>
-          <button
-            className="start-card quiz-start"
-            onClick={() => setQuiz(true)}
-          >
-            <span className="start-icon">
-              <BrainCircuit />
-            </span>
-            <small>Help me discover</small>
-            <h3>I’m not sure—guide me</h3>
-            <p>Answer 10 simple questions and see which jobs fit you.</p>
-            <b>
-              Take the simple career quiz <ChevronRight />
-            </b>
-          </button>
-          <button
-            className="start-card company-start"
-            onClick={() => scrollTo("companies")}
-          >
-            <span className="start-icon">
-              <Target />
-            </span>
-            <small>I have a target</small>
-            <h3>I want to crack a company</h3>
-            <p>Build a plan from recent company patterns and frequency data.</p>
-            <b>
-              Choose a company <ChevronRight />
-            </b>
-          </button>
-          <button
-            className="start-card dsa-start"
-            onClick={() => navigate("/practice?mode=dsa")}
-          >
-            <span className="start-icon">
-              <Code2 />
-            </span>
-            <small>I want to practice</small>
-            <h3>Just give me DSA</h3>
+            <h1>
+              Not sure which software career fits?
+              <span> Start with clarity.</span>
+            </h1>
             <p>
-              Browse topics and difficulty levels without choosing a career
-              path.
+              Work through 18 realistic scenarios to compare the roles that fit
+              your interests, preferred tasks, work style, values, and
+              environment.
             </p>
-            <b>
-              Open DSA practice <ChevronRight />
-            </b>
+            <div className="hero-actions">
+              <button
+                className="hero-cta compass-primary"
+                onClick={() => setQuiz(true)}
+              >
+                Find my best-fit career <ChevronRight size={17} />
+              </button>
+              <button
+                className="hero-resume compass-secondary"
+                onClick={() =>
+                  savedPath ? navigate("/workflow") : scrollTo("start-options")
+                }
+              >
+                <span>
+                  {savedPath
+                    ? "Continue my saved plan"
+                    : "I already know my direction"}
+                </span>
+                {savedPath?.label || "Choose a role or company"}{" "}
+                <ChevronRight size={16} />
+              </button>
+            </div>
+            <div className="hero-reassurance" aria-label="Assessment details">
+              <span>
+                <Clock3 /> About 4 minutes
+              </span>
+              <span>
+                <CheckCircle2 /> No account required
+              </span>
+              <span>
+                <ShieldCheck /> Recommendations, not labels
+              </span>
+            </div>
+          </div>
+          <aside
+            className="career-compass-method"
+            aria-label="What Career Compass considers"
+          >
+            <header>
+              <span>HOW YOUR FIT IS EXPLORED</span>
+              <h2>Five signals, considered together.</h2>
+              <p>No single answer decides your result.</p>
+            </header>
+            <div className="compass-signal-list">
+              <span>
+                <Compass />
+                <b>Interests</b>
+                <small>What naturally holds your attention</small>
+              </span>
+              <span>
+                <Code2 />
+                <b>Daily work</b>
+                <small>The tasks you want more of</small>
+              </span>
+              <span>
+                <Layers3 />
+                <b>Work style</b>
+                <small>How you prefer to solve problems</small>
+              </span>
+              <span>
+                <ShieldCheck />
+                <b>Values</b>
+                <small>What makes work meaningful to you</small>
+              </span>
+              <span>
+                <Building2 />
+                <b>Environment</b>
+                <small>Where you are most likely to thrive</small>
+              </span>
+            </div>
+          </aside>
+        </section>
+
+        <section id="start-options" className="start-section">
+          <div className="center-heading">
+            <span className="eyebrow">
+              <Compass size={15} /> START YOUR WAY
+            </span>
+            <h2>Which sounds most like you?</h2>
+            <p>No wrong door. You can switch paths at any time.</p>
+          </div>
+          <div className="start-grid">
+            <button
+              className="start-card role-start"
+              onClick={() => scrollTo("roles")}
+            >
+              <span className="start-icon">
+                <Briefcase />
+              </span>
+              <small>I already know</small>
+              <h3>I know what I want to become</h3>
+              <p>Choose a job and get its complete skill roadmap.</p>
+              <b>
+                Explore {roles.length || 12} career paths <ChevronRight />
+              </b>
+            </button>
+            <button
+              className="start-card quiz-start"
+              onClick={() => setQuiz(true)}
+            >
+              <span className="start-icon">
+                <BrainCircuit />
+              </span>
+              <small>Help me discover</small>
+              <h3>I’m not sure—guide me</h3>
+              <p>
+                Compare your interests, work style, values, and preferred tasks.
+              </p>
+              <b>
+                Take the career assessment <ChevronRight />
+              </b>
+            </button>
+            <button
+              className="start-card company-start"
+              onClick={() => scrollTo("companies")}
+            >
+              <span className="start-icon">
+                <Target />
+              </span>
+              <small>I have a target</small>
+              <h3>I want to crack a company</h3>
+              <p>
+                Build a plan from recent company patterns and frequency data.
+              </p>
+              <b>
+                Choose a company <ChevronRight />
+              </b>
+            </button>
+            <button
+              className="start-card dsa-start"
+              onClick={() => navigate("/practice?mode=dsa")}
+            >
+              <span className="start-icon">
+                <Code2 />
+              </span>
+              <small>I want to practice</small>
+              <h3>Just give me DSA</h3>
+              <p>
+                Browse topics and difficulty levels without choosing a career
+                path.
+              </p>
+              <b>
+                Open DSA practice <ChevronRight />
+              </b>
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <section
+        className="home-feature-panel home-feature-ribbon"
+        aria-label="Everything in Job Way"
+      >
+        <header>
+          <div>
+            <span>JOB WAY TOOLKIT</span>
+            <h2>Everything you need, one step away.</h2>
+          </div>
+          <strong>{savedPath ? "PLAN READY" : "START FREE"}</strong>
+        </header>
+        <div
+          className="home-status-strip"
+          aria-label="Your preparation overview"
+        >
+          <button onClick={() => scrollTo("companies")}>
+            <Building2 />
+            <span>
+              <strong>{companies.length || 471}</strong>
+              <small>company profiles</small>
+            </span>
+            <ChevronRight />
+          </button>
+          <button onClick={() => navigate("/workflow")}>
+            <CheckCircle2 />
+            <span>
+              <strong>{homeProgress}%</strong>
+              <small>path progress</small>
+            </span>
+            <ChevronRight />
+          </button>
+          <button onClick={() => navigate("/companies/chances")}>
+            <BarChart3 />
+            <span>
+              <strong>Live</strong>
+              <small>readiness map</small>
+            </span>
+            <ChevronRight />
+          </button>
+        </div>
+        <div className="home-feature-grid">
+          <button onClick={() => setQuiz(true)}>
+            <BrainCircuit />
+            <span>
+              <b>Career assessment</b>
+              <small>18 evidence-informed scenarios</small>
+            </span>
+            <ChevronRight />
+          </button>
+          <button onClick={() => scrollTo("roles")}>
+            <Compass />
+            <span>
+              <b>Role roadmaps</b>
+              <small>12 guided career paths</small>
+            </span>
+            <ChevronRight />
+          </button>
+          <button onClick={() => navigate("/dashboard")}>
+            <BookOpenCheck />
+            <span>
+              <b>Learning library</b>
+              <small>Core CS and study guides</small>
+            </span>
+            <ChevronRight />
+          </button>
+          <button onClick={() => navigate("/practice?mode=dsa")}>
+            <Code2 />
+            <span>
+              <b>Practice studio</b>
+              <small>DSA, tests, and walkthroughs</small>
+            </span>
+            <ChevronRight />
+          </button>
+          <button onClick={() => scrollTo("companies")}>
+            <Building2 />
+            <span>
+              <b>Company prep</b>
+              <small>{companies.length || 471} searchable profiles</small>
+            </span>
+            <ChevronRight />
+          </button>
+          <button onClick={() => navigate("/companies/chances")}>
+            <BarChart3 />
+            <span>
+              <b>Readiness signals</b>
+              <small>See where you can apply</small>
+            </span>
+            <ChevronRight />
           </button>
         </div>
       </section>
@@ -267,23 +425,6 @@ export default function OnboardingHub() {
             );
           })}
         </div>
-      </section>
-
-      <section className="quiz-banner enhanced-quiz">
-        <div className="quiz-art">
-          <BrainCircuit />
-        </div>
-        <div>
-          <span className="door-number">CAREER COMPASS</span>
-          <h2>Not sure which job fits? That’s completely fine.</h2>
-          <p>
-            Answer 10 everyday questions. No technical knowledge or complicated
-            words required.
-          </p>
-        </div>
-        <button className="light-button" onClick={() => setQuiz(true)}>
-          Find my best-fit job <ChevronRight size={16} />
-        </button>
       </section>
 
       <section

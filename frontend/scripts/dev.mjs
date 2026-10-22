@@ -10,7 +10,7 @@ const python = candidates.find(command => spawnSync(command, ['--version'], { st
 const children = [];
 
 if (python) {
-  const api = spawn(python, ['-m', 'uvicorn', 'backend.main:app', '--reload', '--port', '8000'], { cwd: root, stdio: 'inherit' });
+  const api = spawn(python, ['-m', 'uvicorn', 'backend.main:app', '--reload', '--port', '8000'], { cwd: root, stdio: 'inherit', shell: process.platform === 'win32' });
   api.on('error', error => console.warn(`FastAPI could not start: ${error.message}`));
   children.push(api);
 } else {
@@ -18,7 +18,7 @@ if (python) {
 }
 
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-const vite = spawn(npmCommand, ['run', 'dev:vite'], { cwd: frontend, stdio: 'inherit' });
+const vite = spawn(npmCommand, ['run', 'dev:vite'], { cwd: frontend, stdio: 'inherit', shell: process.platform === 'win32' });
 children.push(vite);
 
 const shutdown = () => { children.forEach(child => child.kill()); process.exit(); };

@@ -7,7 +7,12 @@ import {
   Send,
   TerminalSquare,
 } from "lucide-react";
-import { getQuestions, post, Question } from "../placementApi";
+import {
+  getQuestions,
+  markQuestionSolvedLocally,
+  post,
+  Question,
+} from "../placementApi";
 import VideoSidePanel from "./VideoSidePanel";
 import "./PlacementPortal.css";
 
@@ -56,13 +61,18 @@ export default function CodingWorkspace() {
     setBusy(true);
     setOutput(undefined);
     try {
-      setOutput(
-        await post<Execution>(`/api/code/${mode}`, {
+      const result = await post<Execution>(`/api/code/${mode}`, {
           question_id: question.id,
           language,
           source_code: code,
-        }),
-      );
+        });
+      if (mode === "submit" && result.all_passed) {
+        markQuestionSolvedLocally(question.id);
+        setQuestion((current) =>
+          current ? { ...current, solved: true } : current,
+        );
+      }
+      setOutput(result);
     } catch (error) {
       setOutput({
         error: error instanceof Error ? error.message : "Runner unavailable",

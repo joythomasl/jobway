@@ -34,9 +34,9 @@ describe("Navbar", () => {
     const themeSelector = screen.getByRole("combobox", {
       name: /color theme/i,
     });
-    await user.selectOptions(themeSelector, "sunset");
+    await user.selectOptions(themeSelector, "dark");
 
-    expect(document.documentElement.dataset.theme).toBe("sunset");
-    expect(localStorage.getItem("jobway-theme")).toBe("sunset");
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(localStorage.getItem("jobway-theme")).toBe("dark");
   });
 });

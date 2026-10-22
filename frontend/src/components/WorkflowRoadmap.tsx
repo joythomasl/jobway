@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
@@ -15,6 +15,7 @@ import {
   Trophy,
 } from "lucide-react";
 import {
+  calculateWorkflowTaskProgress,
   Difficulty,
   getActiveWorkflow,
   Phase,
@@ -190,15 +191,20 @@ function PhaseBlock({
     (_, index) => `${workflowKey}:${phase.number}:${index}`,
   );
   const checkedCount = phaseChecks.filter((id) => checks[id]).length;
+  const requiredProblems = Math.max(0, phase.total - phase.opted_out);
+  const totalTasks = requiredProblems + details.checkpoints.length;
+  const completedTasks =
+    Math.min(phase.solved, requiredProblems) + checkedCount;
+  const taskProgress = totalTasks
+    ? Math.round((completedTasks / totalTasks) * 100)
+    : 0;
   const [open, setOpen] = useState(phase.number === 1);
   const [tab, setTab] = useState<Difficulty | "Opted Out">("Easy");
   const list =
     tab === "Opted Out"
       ? phase.opted_out_questions
       : phase.questions_by_difficulty[tab];
-  const complete =
-    checkedCount === details.checkpoints.length &&
-    phase.progress_percentage === 100;
+  const complete = totalTasks > 0 && completedTasks === totalTasks;
   return (
     <section className={open ? "phase-block open" : "phase-block"}>
       <button className="phase-header" onClick={() => setOpen(!open)}>
@@ -213,13 +219,13 @@ function PhaseBlock({
           <p>{phase.description}</p>
         </div>
         <div className="phase-progress">
-          <strong>{phase.progress_percentage}%</strong>
+          <strong>{taskProgress}%</strong>
           <small>
-            {phase.solved} solved · {checkedCount}/{details.checkpoints.length}{" "}
-            checkpoints
+            {completedTasks}/{totalTasks} tasks · {phase.solved} problems ·{" "}
+            {checkedCount}/{details.checkpoints.length} checkpoints
           </small>
           <div className="mini-progress">
-            <span style={{ width: `${phase.progress_percentage}%` }} />
+            <span style={{ width: `${taskProgress}%` }} />
           </div>
         </div>
         <ChevronDown className="phase-chevron" />
@@ -422,19 +428,19 @@ export default function WorkflowRoadmap() {
       );
       return next;
     });
-  const checkpointProgress = useMemo(() => {
-    const total = 16;
-    const done = Object.values(checks).filter(Boolean).length;
-    return Math.round((done / total) * 100);
-  }, [checks]);
+  const completedCheckpoints = Math.min(
+    16,
+    Object.values(checks).filter(Boolean).length,
+  );
   if (!workflow)
     return (
       <div className="portal-page loading-state">
         Building your detailed roadmap…
       </div>
     );
-  const combinedProgress = Math.round(
-    workflow.overall_progress * 0.75 + checkpointProgress * 0.25,
+  const combinedProgress = calculateWorkflowTaskProgress(
+    workflow,
+    completedCheckpoints,
   );
   return (
     <div className="portal-page roadmap-page">
@@ -470,15 +476,14 @@ export default function WorkflowRoadmap() {
         <div>
           <span>Learning library</span>
           <strong>16 manuscripts + videos</strong>
-          <small>
-            {Object.values(checks).filter(Boolean).length} of 16 checkpoints
-            completed
-          </small>
+          <small>{completedCheckpoints} of 16 checkpoints completed</small>
         </div>
         <div>
-          <span>Problem progress</span>
-          <strong>{workflow.overall_progress}%</strong>
-          <small>Opted-out questions never block you</small>
+          <span>Total task progress</span>
+          <strong>{combinedProgress}%</strong>
+          <small>
+            {workflow.overall_progress}% of coding problems completed
+          </small>
         </div>
         <div>
           <span>Completion rule</span>
@@ -493,6 +498,14 @@ export default function WorkflowRoadmap() {
             (_, i) => `${workflowKey}:${phase.number}:${i}`,
           );
           const done = ids.filter((id) => checks[id]).length;
+          const requiredProblems = Math.max(0, phase.total - phase.opted_out);
+          const totalTasks = requiredProblems + details.checkpoints.length;
+          const completedTasks =
+            Math.min(phase.solved, requiredProblems) + done;
+          const taskProgress = totalTasks
+            ? Math.round((completedTasks / totalTasks) * 100)
+            : 0;
+          const phaseComplete = totalTasks > 0 && completedTasks === totalTasks;
           return (
             <button
               onClick={() =>
@@ -504,18 +517,14 @@ export default function WorkflowRoadmap() {
             >
               <span
                 className={
-                  done === 4 && phase.progress_percentage === 100
+                  phaseComplete
                     ? "complete"
                     : phase.number === 1
                       ? "active"
                       : ""
                 }
               >
-                {done === 4 && phase.progress_percentage === 100 ? (
-                  <Check />
-                ) : (
-                  phase.number
-                )}
+                {phaseComplete ? <Check /> : phase.number}
               </span>
               <div>
                 <small>{details.duration}</small>
@@ -523,7 +532,7 @@ export default function WorkflowRoadmap() {
                 <i>
                   <b
                     style={{
-                      width: `${Math.max(phase.progress_percentage, (done / 4) * 100)}%`,
+                      width: `${taskProgress}%`,
                     }}
                   />
                 </i>

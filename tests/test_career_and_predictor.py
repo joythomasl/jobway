@@ -16,12 +16,21 @@ class RecommendationTests(unittest.TestCase):
         self.assertEqual(len(result), 3)
         self.assertTrue(all(0 <= item["match_percentage"] <= 100 for item in result))
 
-    def test_expanded_catalogue_and_simple_quiz(self):
+    def test_expanded_catalogue_and_multidimensional_assessment(self):
         quiz = load_quiz()
         self.assertEqual(len(_roles()), 12)
-        self.assertEqual(len(quiz), 10)
-        self.assertTrue(all(len(item["scenario"].split()) <= 12 for item in quiz))
+        self.assertEqual(len(quiz), 18)
+        self.assertGreaterEqual(len({item["dimension"] for item in quiz}), 5)
         self.assertTrue(all(len(item["options"]) == 4 for item in quiz))
+        role_coverage = {role_id: 0 for role_id in _roles()}
+        for item in quiz:
+            for role_id in {
+                role_id
+                for option in item["options"]
+                for role_id in option["weights"]
+            }:
+                role_coverage[role_id] += 1
+        self.assertTrue(all(count >= 5 for count in role_coverage.values()))
 
     def test_new_job_has_a_populated_roadmap(self):
         questions = json.loads((ROOT / "frontend/public/questions.json").read_text(encoding="utf-8"))

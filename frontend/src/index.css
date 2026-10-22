@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
-
 :root {
   /* Color Palette */
   --bg-main: #0b0c10;
@@ -22,8 +20,8 @@
   --border-highlight: rgba(255, 255, 255, 0.2);
 
   /* Typography */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'Fira Code', monospace;
+  --font-sans: "Segoe UI", Arial, Helvetica, sans-serif;
+  --font-mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
 }
 
 :root[data-theme='light'] {
@@ -33,28 +31,11 @@
   --text-main: #162033;
   --text-secondary: #53627a;
   --text-muted: #8190a6;
-  --accent-primary: #635bff;
-  --accent-hover: #4f46e5;
-  --accent-glow: rgba(99, 91, 255, .22);
+  --accent-primary: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-glow: rgba(37, 99, 235, .2);
   --border-color: rgba(24, 38, 63, .11);
   --border-highlight: rgba(24, 38, 63, .22);
-}
-
-:root[data-theme='sunset'] {
-  --bg-main: #fff7f2;
-  --bg-secondary: #fffdfb;
-  --bg-tertiary: #ffe8df;
-  --text-main: #2f1834;
-  --text-secondary: #77566e;
-  --text-muted: #a17d94;
-  --accent-primary: #e64a7a;
-  --accent-hover: #c93668;
-  --accent-glow: rgba(230, 74, 122, .24);
-  --success: #098b78;
-  --warning: #e78324;
-  --error: #d93852;
-  --border-color: rgba(92, 43, 78, .13);
-  --border-highlight: rgba(92, 43, 78, .25);
 }
 
 * {
@@ -95,7 +76,6 @@ body {
 }
 
 :root[data-theme='light'] .glass-header { background: rgba(255,255,255,.85); }
-:root[data-theme='sunset'] .glass-panel { background:rgba(255,253,251,.88);box-shadow:0 18px 60px rgba(96,52,84,.1) }
 
 /* Base UI Elements */
 a {
@@ -227,10 +207,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 
 /* Typography Helpers */
 .text-gradient {
-  background: linear-gradient(135deg, #635bff 0%, #ec4899 52%, #08a88a 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--accent-primary);
 }
 
 /* Animations */

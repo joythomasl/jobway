@@ -128,7 +128,7 @@ export default function Dashboard() {
           <div>
             <small>DISCOVER</small>
             <h2>Choose a career</h2>
-            <p>Explore 12 jobs or take the simple quiz.</p>
+            <p>Explore 12 jobs or take the guided career assessment.</p>
           </div>
           <ArrowRight />
         </button>

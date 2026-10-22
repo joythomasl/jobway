@@ -1,102 +1,200 @@
 [
   {
     "id": "q1",
-    "scenario": "Which project sounds the most fun to build?",
+    "dimension": "Interests",
+    "scenario": "A product team gives you a free afternoon. Which problem pulls you in first?",
     "options": [
-      {"id":"a","label":"A website people can use","weights":{"frontend_swe":3,"fullstack_swe":4,"product_ux_swe":3}},
-      {"id":"b","label":"A phone app","weights":{"mobile_swe":4,"product_ux_swe":2}},
-      {"id":"c","label":"A smart tool that learns from data","weights":{"ai_ml_swe":4,"data_swe":2}},
-      {"id":"d","label":"A game","weights":{"game_swe":4,"systems_swe":2}}
+      {"id":"a","label":"Make a confusing screen feel obvious and polished","weights":{"frontend_swe":4,"product_ux_swe":5,"mobile_swe":2}},
+      {"id":"b","label":"Untangle the rules and data flow behind a slow feature","weights":{"backend_swe":5,"fullstack_swe":3,"systems_swe":2}},
+      {"id":"c","label":"Explore usage data to explain an unexpected pattern","weights":{"ai_ml_swe":4,"data_swe":5}},
+      {"id":"d","label":"Investigate how the feature could fail, break, or be misused","weights":{"cybersecurity_swe":4,"qa_automation_swe":5,"cloud_devops_swe":2}}
     ]
   },
   {
     "id": "q2",
-    "scenario": "What kind of problem would you enjoy fixing?",
+    "dimension": "Interests",
+    "scenario": "Which technical system would you most enjoy understanding deeply?",
     "options": [
-      {"id":"a","label":"A page that is confusing to use","weights":{"product_ux_swe":4,"frontend_swe":3}},
-      {"id":"b","label":"An app that becomes slow","weights":{"backend_swe":3,"systems_swe":3,"mobile_swe":2}},
-      {"id":"c","label":"Information that is messy or wrong","weights":{"data_swe":4,"qa_automation_swe":2}},
-      {"id":"d","label":"A system that may not be safe","weights":{"cybersecurity_swe":4,"cloud_devops_swe":2}}
+      {"id":"a","label":"A real-time game world with physics and responsive controls","weights":{"game_swe":5,"systems_swe":3}},
+      {"id":"b","label":"A mobile app that works smoothly across devices and network conditions","weights":{"mobile_swe":5,"frontend_swe":2,"fullstack_swe":2}},
+      {"id":"c","label":"A cloud platform that stays available during sudden traffic spikes","weights":{"cloud_devops_swe":5,"backend_swe":4,"cybersecurity_swe":2}},
+      {"id":"d","label":"A data platform that turns messy events into trustworthy datasets","weights":{"data_swe":5,"ai_ml_swe":3,"backend_swe":2}}
     ]
   },
   {
     "id": "q3",
-    "scenario": "Which part of technology interests you most?",
+    "dimension": "Interests",
+    "scenario": "Which investigation sounds most satisfying?",
     "options": [
-      {"id":"a","label":"What users see and click","weights":{"frontend_swe":4,"product_ux_swe":4}},
-      {"id":"b","label":"What happens behind the screen","weights":{"backend_swe":4,"fullstack_swe":2}},
-      {"id":"c","label":"How computers and memory work","weights":{"systems_swe":4,"game_swe":2}},
-      {"id":"d","label":"How servers stay online","weights":{"cloud_devops_swe":4,"cybersecurity_swe":2}}
+      {"id":"a","label":"Why a model is accurate for one group but weak for another","weights":{"ai_ml_swe":5,"data_swe":3}},
+      {"id":"b","label":"How an attacker might move through a system without being noticed","weights":{"cybersecurity_swe":5,"cloud_devops_swe":2}},
+      {"id":"c","label":"Which rare sequence of actions causes a product defect","weights":{"qa_automation_swe":5,"frontend_swe":2,"fullstack_swe":2}},
+      {"id":"d","label":"Where memory, concurrency, or rendering time is being lost","weights":{"systems_swe":5,"game_swe":3,"backend_swe":2}}
     ]
   },
   {
     "id": "q4",
-    "scenario": "Which task sounds most satisfying?",
+    "dimension": "Interests",
+    "scenario": "What kind of ownership sounds most motivating?",
     "options": [
-      {"id":"a","label":"Making an app look and feel better","weights":{"frontend_swe":3,"mobile_swe":3,"product_ux_swe":4}},
-      {"id":"b","label":"Making a service handle more users","weights":{"backend_swe":4,"cloud_devops_swe":3}},
-      {"id":"c","label":"Finding a bug before anyone else does","weights":{"qa_automation_swe":4,"cybersecurity_swe":2}},
-      {"id":"d","label":"Finding a useful pattern in data","weights":{"data_swe":3,"ai_ml_swe":4}}
+      {"id":"a","label":"Take one user feature from idea through interface and API","weights":{"fullstack_swe":5,"product_ux_swe":3,"backend_swe":2}},
+      {"id":"b","label":"Craft the interaction quality of a web experience","weights":{"frontend_swe":5,"product_ux_swe":4}},
+      {"id":"c","label":"Own a reliable service used by several other teams","weights":{"backend_swe":5,"cloud_devops_swe":3,"data_swe":2}},
+      {"id":"d","label":"Build an experience people carry, touch, and use every day","weights":{"mobile_swe":5,"game_swe":2,"product_ux_swe":2}}
     ]
   },
   {
     "id": "q5",
-    "scenario": "How do you like to see your work succeed?",
+    "dimension": "Daily work",
+    "scenario": "A request is vague. What would you naturally do first?",
     "options": [
-      {"id":"a","label":"People enjoy using it","weights":{"product_ux_swe":4,"frontend_swe":3,"mobile_swe":3}},
-      {"id":"b","label":"It runs quickly and reliably","weights":{"backend_swe":3,"systems_swe":4,"cloud_devops_swe":3}},
-      {"id":"c","label":"It gives an accurate answer","weights":{"ai_ml_swe":4,"data_swe":3}},
-      {"id":"d","label":"It catches mistakes automatically","weights":{"qa_automation_swe":4,"cybersecurity_swe":2}}
+      {"id":"a","label":"Map the user journey and test a small prototype","weights":{"product_ux_swe":5,"frontend_swe":3,"fullstack_swe":2}},
+      {"id":"b","label":"Define the data model, boundaries, and API contract","weights":{"backend_swe":5,"data_swe":3,"fullstack_swe":2}},
+      {"id":"c","label":"Turn the uncertainty into a measurable hypothesis and experiment","weights":{"ai_ml_swe":5,"data_swe":3}},
+      {"id":"d","label":"List assumptions, edge cases, and ways to verify the result","weights":{"qa_automation_swe":5,"cybersecurity_swe":3}}
     ]
   },
   {
     "id": "q6",
-    "scenario": "Which school subject or activity do you prefer?",
+    "dimension": "Daily work",
+    "scenario": "A production feature suddenly fails. Where do you want to start?",
     "options": [
-      {"id":"a","label":"Art, design, or presentations","weights":{"product_ux_swe":4,"frontend_swe":3}},
-      {"id":"b","label":"Math or finding patterns","weights":{"ai_ml_swe":4,"data_swe":3,"game_swe":2}},
-      {"id":"c","label":"Experiments and checking results","weights":{"qa_automation_swe":4,"cybersecurity_swe":2}},
-      {"id":"d","label":"Building and taking things apart","weights":{"systems_swe":4,"mobile_swe":2,"backend_swe":2}}
+      {"id":"a","label":"Reproduce the user flow and inspect browser or device state","weights":{"frontend_swe":4,"mobile_swe":4,"qa_automation_swe":3}},
+      {"id":"b","label":"Follow traces through services, queues, and databases","weights":{"backend_swe":5,"data_swe":3,"fullstack_swe":2}},
+      {"id":"c","label":"Read infrastructure metrics and stabilize the service first","weights":{"cloud_devops_swe":5,"systems_swe":2,"backend_swe":2}},
+      {"id":"d","label":"Check access patterns, audit logs, and possible compromise","weights":{"cybersecurity_swe":5,"cloud_devops_swe":3}}
     ]
   },
   {
     "id": "q7",
-    "scenario": "What would you like to learn first?",
+    "dimension": "Daily work",
+    "scenario": "Which blank-page project would you choose?",
     "options": [
-      {"id":"a","label":"How to make websites","weights":{"frontend_swe":4,"fullstack_swe":4,"product_ux_swe":2}},
-      {"id":"b","label":"How to make Android or iPhone apps","weights":{"mobile_swe":4,"fullstack_swe":2}},
-      {"id":"c","label":"How AI works","weights":{"ai_ml_swe":4,"data_swe":2}},
-      {"id":"d","label":"How hackers and security work","weights":{"cybersecurity_swe":4,"cloud_devops_swe":2}}
+      {"id":"a","label":"An offline-first phone app that uses notifications and sensors","weights":{"mobile_swe":5,"fullstack_swe":2}},
+      {"id":"b","label":"A small game with movement, rules, sound, and progression","weights":{"game_swe":5,"systems_swe":2,"product_ux_swe":2}},
+      {"id":"c","label":"A pipeline that cleans, validates, and serves live event data","weights":{"data_swe":5,"backend_swe":3,"cloud_devops_swe":2}},
+      {"id":"d","label":"A low-level tool that makes other programs faster or safer","weights":{"systems_swe":5,"cybersecurity_swe":2,"backend_swe":2}}
     ]
   },
   {
     "id": "q8",
-    "scenario": "If an app stops working, what would you check first?",
+    "dimension": "Daily work",
+    "scenario": "Which improvement would give you the strongest sense of progress?",
     "options": [
-      {"id":"a","label":"What the user clicked","weights":{"frontend_swe":3,"qa_automation_swe":3,"product_ux_swe":2}},
-      {"id":"b","label":"The server and saved data","weights":{"backend_swe":4,"data_swe":2}},
-      {"id":"c","label":"The internet and cloud setup","weights":{"cloud_devops_swe":4,"cybersecurity_swe":2}},
-      {"id":"d","label":"The phone or computer memory","weights":{"systems_swe":4,"mobile_swe":3,"game_swe":2}}
+      {"id":"a","label":"An interface becomes faster, accessible, and easier to understand","weights":{"frontend_swe":5,"product_ux_swe":4,"mobile_swe":2}},
+      {"id":"b","label":"A service handles ten times the load with simpler code","weights":{"backend_swe":5,"systems_swe":3,"cloud_devops_swe":2}},
+      {"id":"c","label":"A model evaluation becomes reproducible and meaningfully better","weights":{"ai_ml_swe":5,"data_swe":3}},
+      {"id":"d","label":"Automated checks prevent an entire class of regressions","weights":{"qa_automation_swe":5,"cloud_devops_swe":2,"cybersecurity_swe":2}}
     ]
   },
   {
     "id": "q9",
-    "scenario": "Which result would make you proudest?",
+    "dimension": "Work style",
+    "scenario": "When the solution is unclear, which approach feels most natural?",
     "options": [
-      {"id":"a","label":"A beautiful product anyone can understand","weights":{"product_ux_swe":4,"frontend_swe":3}},
-      {"id":"b","label":"A service used by millions of people","weights":{"backend_swe":4,"fullstack_swe":3,"cloud_devops_swe":2}},
-      {"id":"c","label":"A game people cannot stop playing","weights":{"game_swe":4,"mobile_swe":2}},
-      {"id":"d","label":"A safer system with fewer risks","weights":{"cybersecurity_swe":4,"qa_automation_swe":3}}
+      {"id":"a","label":"Build something small, show it, and refine from feedback","weights":{"fullstack_swe":5,"product_ux_swe":4,"frontend_swe":3}},
+      {"id":"b","label":"Clarify constraints and design stable contracts before coding","weights":{"backend_swe":5,"data_swe":3,"systems_swe":2}},
+      {"id":"c","label":"Compare alternatives with data and controlled experiments","weights":{"ai_ml_swe":5,"data_swe":4}},
+      {"id":"d","label":"Map risks and create checks before changing the system","weights":{"cybersecurity_swe":5,"qa_automation_swe":4,"cloud_devops_swe":2}}
     ]
   },
   {
     "id": "q10",
-    "scenario": "What kind of team would you like to join?",
+    "dimension": "Work style",
+    "scenario": "Which kind of detail are you most likely to notice?",
     "options": [
-      {"id":"a","label":"A team creating a new product","weights":{"fullstack_swe":4,"product_ux_swe":3,"mobile_swe":2}},
-      {"id":"b","label":"A team working with data and AI","weights":{"data_swe":4,"ai_ml_swe":4}},
-      {"id":"c","label":"A team keeping systems fast and online","weights":{"cloud_devops_swe":4,"systems_swe":3,"backend_swe":2}},
-      {"id":"d","label":"A team testing and protecting software","weights":{"qa_automation_swe":4,"cybersecurity_swe":4}}
+      {"id":"a","label":"A confusing interaction, visual inconsistency, or accessibility gap","weights":{"product_ux_swe":5,"frontend_swe":5,"mobile_swe":2}},
+      {"id":"b","label":"A schema assumption, missing lineage, or inconsistent record","weights":{"data_swe":5,"backend_swe":3}},
+      {"id":"c","label":"A memory allocation, frame drop, or concurrency hazard","weights":{"systems_swe":5,"game_swe":4}},
+      {"id":"d","label":"An untested boundary, weak permission, or incomplete failure case","weights":{"qa_automation_swe":5,"cybersecurity_swe":5}}
+    ]
+  },
+  {
+    "id": "q11",
+    "dimension": "Work style",
+    "scenario": "Which kind of change are you most comfortable handling?",
+    "options": [
+      {"id":"a","label":"Frequent product feedback and changing feature priorities","weights":{"fullstack_swe":4,"frontend_swe":3,"mobile_swe":3,"product_ux_swe":4}},
+      {"id":"b","label":"Slow, careful evolution of foundational architecture","weights":{"backend_swe":4,"systems_swe":5,"data_swe":2}},
+      {"id":"c","label":"Live operational conditions that require fast, calm decisions","weights":{"cloud_devops_swe":5,"cybersecurity_swe":4,"backend_swe":2}},
+      {"id":"d","label":"Repeated hypothesis changes as new evidence appears","weights":{"ai_ml_swe":5,"data_swe":3,"qa_automation_swe":2}}
+    ]
+  },
+  {
+    "id": "q12",
+    "dimension": "Work style",
+    "scenario": "Which collaboration would energize you most?",
+    "options": [
+      {"id":"a","label":"Pairing with design and product to simplify a user problem","weights":{"product_ux_swe":5,"frontend_swe":4,"fullstack_swe":3}},
+      {"id":"b","label":"Working with app teams to ship a complete customer feature","weights":{"fullstack_swe":5,"mobile_swe":4,"frontend_swe":2}},
+      {"id":"c","label":"Helping teams share reliable platforms, services, and data","weights":{"backend_swe":4,"cloud_devops_swe":4,"data_swe":4}},
+      {"id":"d","label":"Reviewing evidence with researchers, testers, or risk specialists","weights":{"ai_ml_swe":3,"qa_automation_swe":4,"cybersecurity_swe":4}}
+    ]
+  },
+  {
+    "id": "q13",
+    "dimension": "Work values",
+    "scenario": "Which outcome would make your work feel most meaningful?",
+    "options": [
+      {"id":"a","label":"People can complete something important with less friction","weights":{"product_ux_swe":5,"frontend_swe":4,"mobile_swe":3}},
+      {"id":"b","label":"A system quietly serves millions of requests reliably","weights":{"backend_swe":5,"cloud_devops_swe":4,"systems_swe":2}},
+      {"id":"c","label":"A decision becomes clearer because the evidence is trustworthy","weights":{"data_swe":5,"ai_ml_swe":4}},
+      {"id":"d","label":"Users and teams are protected from avoidable failures","weights":{"cybersecurity_swe":5,"qa_automation_swe":4,"cloud_devops_swe":2}}
+    ]
+  },
+  {
+    "id": "q14",
+    "dimension": "Work values",
+    "scenario": "What kind of professional growth matters most to you?",
+    "options": [
+      {"id":"a","label":"Owning complete features and understanding the whole product","weights":{"fullstack_swe":5,"mobile_swe":3,"product_ux_swe":2}},
+      {"id":"b","label":"Developing a distinctive craft in interaction and presentation","weights":{"frontend_swe":4,"product_ux_swe":5,"game_swe":3}},
+      {"id":"c","label":"Becoming the person who can solve a difficult technical core problem","weights":{"systems_swe":5,"backend_swe":4,"ai_ml_swe":3}},
+      {"id":"d","label":"Setting standards that make an organization safer and more dependable","weights":{"qa_automation_swe":4,"cybersecurity_swe":5,"cloud_devops_swe":4,"data_swe":2}}
+    ]
+  },
+  {
+    "id": "q15",
+    "dimension": "Work values",
+    "scenario": "Which description of excellent work appeals to you most?",
+    "options": [
+      {"id":"a","label":"Creative, visible, and immediately useful to people","weights":{"frontend_swe":4,"product_ux_swe":5,"mobile_swe":3,"game_swe":2}},
+      {"id":"b","label":"Technically deep, efficient, and built to last","weights":{"systems_swe":5,"backend_swe":4}},
+      {"id":"c","label":"Evidence-driven, explainable, and intellectually challenging","weights":{"ai_ml_swe":5,"data_swe":4}},
+      {"id":"d","label":"Repeatable, observable, and resistant to mistakes","weights":{"qa_automation_swe":4,"cloud_devops_swe":5,"cybersecurity_swe":3}}
+    ]
+  },
+  {
+    "id": "q16",
+    "dimension": "Work environment",
+    "scenario": "Which demanding day would still feel worthwhile?",
+    "options": [
+      {"id":"a","label":"A fast release cycle with many small product decisions","weights":{"fullstack_swe":4,"frontend_swe":3,"mobile_swe":3,"product_ux_swe":2}},
+      {"id":"b","label":"A service incident where the team must restore stability calmly","weights":{"cloud_devops_swe":5,"backend_swe":4,"cybersecurity_swe":3}},
+      {"id":"c","label":"Several uninterrupted hours tracing one difficult technical defect","weights":{"systems_swe":5,"game_swe":3,"qa_automation_swe":3}},
+      {"id":"d","label":"An experiment that fails but teaches you what to try next","weights":{"ai_ml_swe":5,"data_swe":3}}
+    ]
+  },
+  {
+    "id": "q17",
+    "dimension": "Work environment",
+    "scenario": "Which learning path would you choose for the next month?",
+    "options": [
+      {"id":"a","label":"Accessibility, interaction design, browser behavior, and visual systems","weights":{"frontend_swe":5,"product_ux_swe":5,"mobile_swe":2}},
+      {"id":"b","label":"Distributed systems, APIs, databases, and service design","weights":{"backend_swe":5,"fullstack_swe":3,"cloud_devops_swe":2}},
+      {"id":"c","label":"Statistics, experimentation, machine learning, and data quality","weights":{"ai_ml_swe":5,"data_swe":5}},
+      {"id":"d","label":"Operating systems, security, automation, and performance","weights":{"systems_swe":5,"cybersecurity_swe":4,"qa_automation_swe":2,"game_swe":2}}
+    ]
+  },
+  {
+    "id": "q18",
+    "dimension": "Work environment",
+    "scenario": "Which portfolio artifact would you be proudest to explain in an interview?",
+    "options": [
+      {"id":"a","label":"An accessible interactive product with thoughtful user research","weights":{"product_ux_swe":5,"frontend_swe":4,"mobile_swe":3}},
+      {"id":"b","label":"A well-designed service architecture with clear reliability trade-offs","weights":{"backend_swe":5,"fullstack_swe":3,"cloud_devops_swe":4}},
+      {"id":"c","label":"A reproducible model or dashboard built from carefully validated data","weights":{"ai_ml_swe":5,"data_swe":5}},
+      {"id":"d","label":"A test, security, performance, or simulation tool that exposes hidden problems","weights":{"qa_automation_swe":4,"cybersecurity_swe":4,"systems_swe":4,"game_swe":3}}
     ]
   }
 ]

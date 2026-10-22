@@ -71,6 +71,135 @@ export interface Workflow {
   phases: Phase[];
 }
 
+const LOCAL_SOLVED_KEY = "jobway-solved-questions";
+const CHECKPOINT_COUNT = 16;
+
+export interface ActiveWorkflowSelection {
+  mode: "role" | "company";
+  target_id: string;
+}
+
+export function getLocalSolvedQuestionIds(): string[] {
+  try {
+    const value = JSON.parse(localStorage.getItem(LOCAL_SOLVED_KEY) || "[]");
+    return Array.isArray(value)
+      ? value.filter((id): id is string => typeof id === "string")
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+export function markQuestionSolvedLocally(questionId: string) {
+  const solved = new Set(getLocalSolvedQuestionIds());
+  solved.add(questionId);
+  localStorage.setItem(LOCAL_SOLVED_KEY, JSON.stringify([...solved]));
+}
+
+export function getActiveWorkflowSelection(): ActiveWorkflowSelection {
+  try {
+    const value = JSON.parse(
+      localStorage.getItem("jobway-active-workflow") || "null",
+    ) as Partial<ActiveWorkflowSelection> | null;
+    if (
+      value &&
+      (value.mode === "role" || value.mode === "company") &&
+      typeof value.target_id === "string"
+    ) {
+      return { mode: value.mode, target_id: value.target_id };
+    }
+  } catch {
+    /* Fall through to the default path. */
+  }
+  return { mode: "role", target_id: "backend_swe" };
+}
+
+export function getLocalCheckpointChecks(
+  mode: "role" | "company",
+  targetId: string,
+): Record<string, boolean> {
+  try {
+    const value = JSON.parse(
+      localStorage.getItem(`jobway-checks:${mode}:${targetId}`) || "{}",
+    );
+    return value && typeof value === "object"
+      ? (value as Record<string, boolean>)
+      : {};
+  } catch {
+    return {};
+  }
+}
+
+export function getCompletedCheckpointCount(
+  mode: "role" | "company",
+  targetId: string,
+): number {
+  return Math.min(
+    CHECKPOINT_COUNT,
+    Object.values(getLocalCheckpointChecks(mode, targetId)).filter(Boolean)
+      .length,
+  );
+}
+
+export function calculateWorkflowTaskProgress(
+  workflow: Workflow,
+  completedCheckpoints: number,
+): number {
+  const requiredProblems = workflow.phases.reduce(
+    (sum, phase) => sum + Math.max(0, phase.total - phase.opted_out),
+    0,
+  );
+  const solvedProblems = workflow.phases.reduce(
+    (sum, phase) =>
+      sum + Math.min(phase.solved, Math.max(0, phase.total - phase.opted_out)),
+    0,
+  );
+  const totalTasks = requiredProblems + CHECKPOINT_COUNT;
+  const completedTasks =
+    solvedProblems + Math.min(CHECKPOINT_COUNT, completedCheckpoints);
+  return totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
+}
+
+function applyLocalProgress(workflow: Workflow): Workflow {
+  const solvedIds = new Set(getLocalSolvedQuestionIds());
+  const phases = workflow.phases.map((phase) => {
+    const questionsByDifficulty = Object.fromEntries(
+      Object.entries(phase.questions_by_difficulty).map(
+        ([difficulty, items]) => [
+          difficulty,
+          items.map((question) => ({
+            ...question,
+            solved: question.solved || solvedIds.has(question.id),
+          })),
+        ],
+      ),
+    ) as Record<Difficulty, Question[]>;
+    const available = Object.values(questionsByDifficulty).flat();
+    const solved = available.filter((question) => question.solved).length;
+    const optedOut = phase.opted_out_questions.length;
+    const total = available.length + optedOut;
+    const required = Math.max(0, total - optedOut);
+    return {
+      ...phase,
+      questions_by_difficulty: questionsByDifficulty,
+      total,
+      solved,
+      opted_out: optedOut,
+      progress_percentage: required ? Math.round((solved / required) * 100) : 0,
+    };
+  });
+  const total = phases.reduce(
+    (sum, phase) => sum + Math.max(0, phase.total - phase.opted_out),
+    0,
+  );
+  const solved = phases.reduce((sum, phase) => sum + phase.solved, 0);
+  return {
+    ...workflow,
+    phases,
+    overall_progress: total ? Math.round((solved / total) * 100) : 0,
+  };
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     credentials: "include",
@@ -101,10 +230,20 @@ export async function getCompanies(): Promise<Company[]> {
   }
 }
 export async function getQuestions(): Promise<Question[]> {
+  const solved = new Set(getLocalSolvedQuestionIds());
   try {
-    return await request<Question[]>("/api/questions");
+    return (await request<Question[]>("/api/questions")).map((question) => ({
+      ...question,
+      solved: question.solved || solved.has(question.id),
+    }));
   } catch {
-    return (await fetch("/questions.json")).json();
+    const questions = (await fetch("/questions.json").then((response) =>
+      response.json(),
+    )) as Question[];
+    return questions.map((question) => ({
+      ...question,
+      solved: question.solved || solved.has(question.id),
+    }));
   }
 }
 export async function selectWorkflow(
@@ -130,12 +269,9 @@ export async function getActiveWorkflow(): Promise<Workflow> {
       "/api/workflow/active",
     );
     if (active.active_workflow === null) throw new Error("No active workflow");
-    return active;
+    return applyLocalProgress(active);
   } catch {
-    const selected = JSON.parse(
-      localStorage.getItem("jobway-active-workflow") ||
-        '{"mode":"role","target_id":"backend_swe"}',
-    );
+    const selected = getActiveWorkflowSelection();
     const [roles, questions] = await Promise.all([getRoles(), getQuestions()]);
     const role =
       roles.find((item) => item.id === selected.target_id) || roles[0];
@@ -174,7 +310,7 @@ export async function getActiveWorkflow(): Promise<Workflow> {
         progress_percentage: 0,
       };
     });
-    return {
+    return applyLocalProgress({
       mode: selected.mode,
       target_id: selected.target_id,
       title:
@@ -183,7 +319,7 @@ export async function getActiveWorkflow(): Promise<Workflow> {
           : `${role.title} Workflow`,
       overall_progress: 0,
       phases,
-    };
+    });
   }
 }
 export const post = <T>(path: string, body: unknown) =>

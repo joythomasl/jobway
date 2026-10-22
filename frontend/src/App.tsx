@@ -17,6 +17,7 @@ import WorkflowRoadmap from "./components/WorkflowRoadmap";
 import CodingWorkspace from "./components/CodingWorkspace";
 import CompanyChancesView from "./components/CompanyChancesView";
 import PracticeHub from "./components/PracticeHub";
+import GuidedJourney from "./components/GuidedJourney";
 import { useAuthStore } from "./store/useAuthStore";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
     <Router>
       <div className="app-container">
         <Navbar />
+        <GuidedJourney />
         <main>
           <Routes>
             <Route path="/" element={<Navigate to="/prepare" replace />} />
